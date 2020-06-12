@@ -1,0 +1,136 @@
+{% extends 'base.html' %}
+{% load custom_tags %}
+
+
+{% block css %}
+<style>
+    tr
+    {
+        border: none!important;
+        letter-spacing: 0.1rem;
+    }
+</style>
+
+    
+{% endblock css %}
+
+
+    
+
+
+{% block body %}
+
+<div class="container mt-5">
+    <h1 style="text-align: center;font-family: Arial, Helvetica, sans-serif;font-size: 30px;">Order Summery</h1>
+    <div class="row my-4">
+
+        <div class="col-lg-3 col-0">
+
+        </div>
+        <div class="col-lg-6 col-12  text-center">
+        
+            <table class="table mt-2" style="border: none!important;">
+                
+                  <tr>
+                    <th scope="col">Item Name</th>
+                    <th>quantity</th>
+                    <th scope="col">Price</th>
+                   
+                  </tr>
+                
+                <tbody>
+                    {% for i in order.cart.all %}
+                    <tr>
+                    <td>{{i.cart.name}}</td>
+                    <td>{{i.quantity}}</td>
+                    
+                    <td>{{i.cart.price}}X{{i.quantity}}={{i.cart.price|tp:i.quantity}}</td>
+                </tr>
+                {% endfor %}
+                <tr>
+                    <td class="text-success" style="font-weight: bold; font-size: 20px;">Total Price:</td>
+                    <td></td>
+                    <td class="text-info" style="font-weight: bold;font-size: 20px;">{{order.cost}}</td>
+                </tr>
+                <tr>
+
+                </tr>
+                </tbody>
+            </table>      
+
+           </div>
+    </div>
+  
+</div>
+
+<section class="text-gray-700 body-font">
+    <div class="container px-5 py-24 mx-auto">
+     
+      <div class="flex flex-wrap lg:w-4/5 sm:mx-auto sm:mb-2 -mx-2">
+        <div class="p-2 sm:w-1/2 w-full">
+          <div class="bg-gray-200 rounded flex p-4 h-full items-center">
+            <svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="3" class="text-pink-500 w-6 h-6 flex-shrink-0 mr-4" viewBox="0 0 24 24">
+              <path d="M22 11.08V12a10 10 0 11-5.93-9.14"></path>
+              <path d="M22 4L12 14.01l-3-3"></path>
+            </svg>
+            <span class="title-font font-medium">Order Status:&emsp;{{order.status}}</span>
+          </div>
+        </div>
+
+        <div class="p-2 sm:w-1/2 w-full">
+            <div class="bg-gray-200 rounded flex p-4 h-full items-center">
+              <svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="3" class="text-pink-500 w-6 h-6 flex-shrink-0 mr-4" viewBox="0 0 24 24">
+                <path d="M22 11.08V12a10 10 0 11-5.93-9.14"></path>
+                <path d="M22 4L12 14.01l-3-3"></path>
+              </svg>
+              <span class="title-font font-medium">Order Date:&emsp;{{order.stime}}</span>
+            </div>
+          </div>
+
+          <div class="p-2 sm:w-1/2 w-full">
+            <div class="bg-gray-200 rounded flex p-4 h-full items-center">
+              <svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="3" class="text-pink-500 w-6 h-6 flex-shrink-0 mr-4" viewBox="0 0 24 24">
+                <path d="M22 11.08V12a10 10 0 11-5.93-9.14"></path>
+                <path d="M22 4L12 14.01l-3-3"></path>
+              </svg>
+              <span class="title-font font-medium">Payment Mode:&emsp;COD(Cash On Delivary)</span>
+            </div>
+          </div>
+
+          <div class="p-2 sm:w-1/2 w-full mx-auto">
+            <div class="bg-white-200 rounded flex p-4 h-full items-center">
+             
+              <button class="cancelbtn btn btn-outline-danger" type="button">Cancel Order</button> 
+            </div>
+          </div>
+
+     </div> 
+   </div>
+ </section>
+ <div class="tool" style="display: none;">Are You Want to Cancel This Order?
+  <br>
+  <a href="/cancel/{{order.slug}}" style="text-decoration: none;"><button class="btn btn-primary btn-sm m-3" style="float:right">Yes</button></a>
+  <button class="closedialog btn btn btn-danger btn-sm m-3" style="float:right">No</button>
+ 
+</div>      
+{% endblock body %}
+    
+
+
+
+
+{% block script %}
+<script>
+$(".cancelbtn").click(function(){
+  $(".tool").dialog()
+
+})
+
+   $(".closedialog").click(function(){
+    $(".tool").dialog('close')
+  })
+  $(".tool").hide()
+</script>
+    
+{% endblock script %}
+    

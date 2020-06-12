@@ -1,0 +1,264 @@
+{% extends 'base.html' %}
+{% load custom_tags %}
+{% block css %}
+    
+{% endblock css %}
+  <style>
+    td
+    {
+      margin-left: 40px;
+    }
+    .cartbtn
+    {
+      background-color:red!important
+    }
+    .liitem
+    {
+      font-size: 40px;
+    }
+    .cartbtn:hover
+    {
+      transform: translatey("-3px");
+    }
+  </style>  
+
+{% block body %}
+
+<div class="site-section mt-5">
+  <div class="container pt-5">
+    <div class="row mb-5">
+      <form class="col-md-12" method="post">
+        <div class="site-blocks-table">
+          <table class="table table-bordered">
+            <thead>
+              <tr>
+                <th class="product-thumbnail">Image</th>
+                <th class="product-name">Product</th>
+                <th class="product-price">Price</th>
+                <th class="product-quantity">Quantity</th>
+                <th class="product-total">Total</th>
+                <th class="product-remove">Remove</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for i in con %}
+              <tr>
+                <td class="product-thumbnail">
+                  <img src="{{i.cart.image.url}}" alt="Image" class="img-fluid mx-2" style="height:100px;width:120px">
+                </td>
+                <td class="product-name">
+                  <h2 class="h5 text-black">{{i.cart.name|truncatechars:50}}<br>{{i.cart.brand}}</h2>
+                  
+                  <a href="/product/{{i.cart.slug}}" style="text-decoration: none;color:blueviolet!important">Check Product</a>
+                </td>
+                <td>Rs:{{i.cart.price}}</td>
+                <td>
+                  <div class="input-group mb-3" style="max-width: 120px;">
+                    <div class="input-group-prepend">
+                      <button class="btn btn-outline-primary js-btn-minus" onclick="minus('{{user.username}}','{{i.cart.slug}}','{{con.number}}');" type="button">−</button>
+                    </div>
+                    <input type="text" class="form-control text-center" value="{{user.username|findproduct:i.cart.slug}}" placeholder="" aria-label="Example text with button addon" aria-describedby="button-addon1" readonly>
+                    <div class="input-group-append">
+                      <button class="btn btn-outline-primary js-btn-plus" type="button" onclick="plus('{{user.username}}','{{i.cart.slug}}','{{con.number}}');">+</button>
+                    </div>
+                  </div>
+                  
+                </td>
+                <td>Rs:{{i.cart|totalprice}}</td>
+              <td><a title="Delete From Cart" class="toolbtn btn btn-primary btn-sm" style="color:white;text-decoration: none;">Delete<i class="fa fa-trash ml-2" aria-hidden="true"></i></a></td> 
+              </tr>
+              <div class="tool" style="display: none;">Are You Want to delete the item from your cart?
+                <br>
+                <button class="btn btn-primary btn-sm m-3" style="float:right" id="{{i.cart.slug}}" onclick="removecart('{{i.cart.slug}}','{{user.username}}','{{con.number}}')">Yes</button>
+                <button class="closedialog btn btn-danger btn-sm m-3" style="float:right">No</button>
+               
+              </div>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </form>
+    </div>
+      
+
+
+    <div class="row mx-auto mb-4">
+      <nav aria-label="Page navigation example" class="mx-auto">
+        <ul class="pagination">
+            {% if con.has_previous %}
+          <li class="page-item">
+            <a  href="?page={{con.previous_page_number}}" style="text-decoration: none;">
+              <button class="btn btn-outline-primary">Previous Page</button>
+            </a>
+          </li>
+            {% endif %}
+          <li class="page-item"><a href="?page={{con.number}}" style="text-decoration: none;"><button class="ml-4 btn btn-outline-primary">{{con.number}}
+
+          </button></a></li>
+          {% if con.has_next %}
+          <li class="page-item">
+            <a href="?page={{con.next_page_number}}" style="text-decoration: none;">
+              <button class="ml-4 btn btn-outline-primary">Next Page</button>
+            </a>
+          </li>
+            
+      
+      
+              
+              {% endif %}
+        </ul>
+      </nav>
+    </div>
+
+
+    <div class="row">
+      <div class="col-md-6">
+        <div class="row mb-5">
+         
+          <div class="col-md-6">
+            <a href="/" style="text-decoration: none;"><button class="cartbtn btn btn-outline-primary btn-sm btn-block">Continue Shopping</button></a>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-12">
+            <label class="text-black h4" for="coupon">Coupon</label>
+            <p>Enter your coupon code if you have one.</p>
+          </div>
+          <div class="col-md-8 mb-3 mb-md-0">
+            <input type="text" class="form-control py-3" id="coupon" placeholder="Coupon Code">
+          </div>
+          <div class="col-md-4">
+            <button class="btn btn-primary btn-sm">Apply Coupon</button>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-6 pl-5">
+        <div class="row justify-content-end">
+          <div class="col-md-7">
+            <div class="row">
+              <div class="col-md-12 text-right border-bottom mb-5">
+                <h3 class="text-black h4 text-uppercase">Cart Totals</h3>
+              </div>
+            </div>
+            <div class="row mb-3">
+              <div class="col-md-6">
+                <span class="text-black">Subtotal</span>
+              </div>
+              <div class="col-md-6 text-right">
+                <strong class="text-black">Rs:{{sum}}</strong>
+              </div>
+            </div>
+            <div class="row mb-5">
+              <div class="col-md-6">
+                <span class="text-black">Total</span>
+              </div>
+              <div class="col-md-6 text-right">
+                <strong class="text-black">Rs:{{sum}}</strong>
+              </div>
+            </div>
+
+            <div class="row">
+              <div class="col-md-12">
+                <a href="/orderhome" style="text-decoration: none;"><button class="cartbtn btn btn-info btn-lg py-3 btn-block">Proceed To Checkout</button> </a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% endblock body %}
+    
+
+
+{% block script %}
+<script>
+  $(".closedialog").click(function(){
+    $(".tool").dialog('close')
+  })
+  $(".tool").hide()
+  function removecart(slug,user,no)
+  {
+    var req = new XMLHttpRequest();
+    hide=slug
+    
+
+  	url="/removecarts/"+hide
+   
+
+  
+  req.onreadystatechange = function() {
+    if (this.readyState == 4 && this.status == 200) {
+      if(req.responseText=="true")
+      {
+          
+        window.location.href="/showcarts/"+user+"?page="+no
+      }
+    }
+  };
+  req.open("GET", url, true);
+ 
+  req.send();
+
+  }
+  function minus(user,slug,no)
+  {
+    var req = new XMLHttpRequest();
+    hide=slug
+    
+     
+  	url="/decreasecarts/"+hide
+   
+
+  
+  req.onreadystatechange = function() {
+    if (this.readyState == 4 && this.status == 200) {
+      if(req.responseText=="true")
+      {
+          
+        window.location.href="/showcarts/"+user+"?page="+no
+      }
+    }
+  };
+  req.open("GET", url, true);
+ 
+  req.send();
+
+  }
+
+  function plus(user,slug,no)
+  {
+    var req = new XMLHttpRequest();
+    hide=slug
+
+      
+  	url="/increasecarts/"+hide
+   
+
+  
+  req.onreadystatechange = function() {
+    if (this.readyState == 4 && this.status == 200) {
+      if(req.responseText=="true")
+      {
+          
+        window.location.href="/showcarts/"+user+"?page="+no
+      }
+    }
+  };
+  req.open("GET", url, true);
+ 
+  req.send();
+
+  }
+  $(".toolbtn").tooltip()
+
+  $(".toolbtn").click(function()
+  {
+    $(".tool").dialog()
+  })
+</script>
+    
+{% endblock script %}
+    

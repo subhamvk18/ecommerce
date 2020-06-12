@@ -1,0 +1,84 @@
+{% extends 'base.html' %}
+
+
+{% block css %}
+    
+{% endblock css %}
+    
+
+
+
+{% block body %}
+
+<section class="text-gray-700 body-font overflow-hidden">
+  <div class="container px-5 py-24 mx-auto">
+    <div class="-my-8">
+        {% for i in order %}
+      <div class="py-8 flex flex-wrap md:flex-no-wrap" data-aos="fade-up">
+        <div class="md:w-64 md:mb-0 mb-6 flex-shrink-0 flex flex-col">
+          <span class="tracking-widest font-medium title-font text-gray-900">Order(complete)</span>
+          <span class="mt-1 text-gray-500 text-sm">{{i.stime}}</span>
+        </div>
+        <div class="md:flex-grow">
+          <h2 class="text-2xl font-medium text-gray-900 title-font mb-1 mt-2">Rs:{{i.cost}}</h2>
+          <p class="leading-relaxed">Glossier echo park pug, church-key sartorial biodiesel vexillologist pop-up snackwave ramps cornhole. Marfa 3 wolf moon party messenger bag selfies, poke vaporware kombucha lumbersexual pork belly polaroid hoodie portland craft beer.</p>
+          <a class="text-indigo-500 inline-flex items-center mt-2 mb-2" href="/showorder/{{i.slug}}" style="text-decoration: none;"><button class="btn btn-outline-primary">Order Details</button> 
+           
+          </a>
+        </div>
+      </div>
+     
+  
+    
+      {% endfor %}
+</div>
+</div>
+</section>
+
+<div class="row mx-auto mb-4">
+  <nav aria-label="Page navigation example" class="mx-auto">
+    <ul class="pagination">
+        {% if order.has_previous %}
+      <li class="page-item">
+        <a  href="?page={{order.previous_page_number}}" style="text-decoration: none;">
+          <button class="btn btn-outline-primary">Previous Page</button>
+        </a>
+      </li>
+        {% endif %}
+      <li class="page-item"><a href="?page={{order.number}}" style="text-decoration: none;"><button class="ml-4 btn btn-outline-primary">{{order.number}}
+
+      </button></a></li>
+      {% if order.has_next %}
+      <li class="page-item">
+        <a href="?page={{order.next_page_number}}" style="text-decoration: none;">
+          <button class="ml-4 btn btn-outline-primary">Next Page</button>
+        </a>
+      </li>
+        
+  
+  
+          
+          {% endif %}
+    </ul>
+  </nav>
+</div>
+
+    
+{% endblock body %}
+    
+
+
+
+
+{% block script %}
+<script>
+   AOS.init({
+      offset:430,
+      duration:1000,
+      once:true,
+      delay:1
+    })
+</script>
+    
+{% endblock script %}
+    

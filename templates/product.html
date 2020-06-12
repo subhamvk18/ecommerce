@@ -1,0 +1,233 @@
+{% extends 'base.html' %}
+{% load custom_tags %}
+
+{% block css %}
+  <link rel="stylesheet" href="/static/css/owl.carousel.css">
+  <link rel="stylesheet" href="/static/css/owl.theme.default.css">
+  <style>
+  .pc
+    {
+      text-align: center;
+      color: blue;
+      font-size: 25px;
+      font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
+    }
+    .card:hover
+    {
+      transform: translateY(-2px);
+      /*background-color: #c4c89b!important;*/
+    }
+  
+    .d1
+    {
+      background: rgba(238,174,202,0.1);
+      background: linear-gradient(72deg, rgba(238,174,202,0.5) 0%, rgba(148,233,225,0.7) 90%);
+      
+     
+    }
+    .d1
+    {
+      text-align: center;
+      color: #8a2be2;
+      padding-top: 20%;
+     
+    }
+    .fa1
+    {
+      font-size: 35px;
+      font-weight: bold;
+      padding-left: 4px;
+      padding-right: 2px;
+    }
+    .cartbtn
+    {
+      padding: 6px 6px;
+      padding-left: 3px;
+      padding-right: 3px;
+      border: 1px solid black;
+      color:whitesmoke;
+      
+      border-radius: 100px;
+      background-color: #cd025c;
+      width: 200px;
+
+    }
+    .cartbtn:focus
+    {
+      outline: none;
+      
+    }
+    .cartbtn:hover
+    {
+      background-color: navy;
+    }
+
+    @media (min-width:800px){
+    .con1 {
+    
+    font: outline;
+   
+   }}
+  </style>
+{% endblock css %}
+
+    
+  
+{% block body %}
+<section class="text-gray-700 body-font">
+  <div class="con1 container px-5 py-24 mx-auto">
+    <div class="flex flex-wrap -m-4 lg:ml-10">
+      
+    {% for i in rdict %}  
+      <div class="card lg:w-1/4 md:w-1/2 p-4 w-full lg:ml-12 mt-3" data-aos="zoom-in-right">
+        <a class="block relative h-48 rounded overflow-hidden">
+          <img alt="ecommerce" class="imgcard object-cover object-center w-full h-full block" src="{{i.image.url}}">
+          <div class="d1 object-cover object-center w-full h-full block">
+            <i class="fa1 fa fa-star" aria-hidden="true"></i>
+            <i class="fa1 fa fa-star" aria-hidden="true"></i>
+            <i class="fa1 fa fa-star" aria-hidden="true"></i>
+            <i class="fa1 fa fa-star" aria-hidden="true"></i>
+            <br>
+            
+              {% if user.username|checkcart:i.slug == "true" %}
+              <button class="cartbtn mt-4" onclick="removecart('{{i.slug}}')">RemovefromCart</button>
+              
+              {% else %}
+              <button class="cartbtn mt-4" onclick="addcart('{{i.slug}}')">AddtoCart</button>
+              {% endif %}
+            
+          </div>
+          <input type="hidden" id="hidevalue" value="{{i.category.slug}}">
+        </a>
+        <div class="mt-4">
+          <h3 class="text-gray-900 text-xs tracking-widest title-font mb-1" style="font-weight: bold;">{{i.category.name}}</h3>
+          <h2 class="text-red-900 title-font text-lg font-medium">{{i.name}}</h2>
+          <h5 class="text-indigo-900 title-font text-sm font-medium">{{i.brand}}</h5>
+          <p class="mt-1">Rs{{i.price}}</p>
+          <a class="seemore" href="/product/{{i.slug}}" style="color:#431c5b; text-decoration: none;float:right;font-weight: bold;">See more</a>
+        </div>
+      </div>
+      {% endfor %}
+     
+      </div>
+      </div>
+      </section>
+
+
+
+
+      <div class="row mx-auto mb-4">
+        <nav aria-label="Page navigation example" class="mx-auto">
+          <ul class="pagination">
+              {% if rdict.has_previous %}
+            <li class="page-item">
+              <a  href="?page={{rdict.previous_page_number}}" style="text-decoration: none;">
+                <button class="btn btn-outline-primary">Previous Page</button>
+              </a>
+            </li>
+              {% endif %}
+            <li class="page-item"><a href="?page={{rdict.number}}" style="text-decoration: none;"><button class="ml-4 btn btn-outline-primary">{{rdict.number}}
+            
+    
+            </button></a></li>
+            {% if rdict.has_next %}
+            <li class="page-item">
+              <a href="?page={{rdict.next_page_number}}" style="text-decoration: none;">
+                <button class="ml-4 btn btn-outline-primary">Next Page</button>
+              </a>
+            </li>
+              
+        
+        
+                
+                {% endif %}
+          </ul>
+        </nav>
+      </div>
+{% endblock body %}
+  
+
+
+
+{% block script %}
+  <script src="/static/js/owl.carousel.js"></script>
+  <script src="/static/js/owl.carousel.min.js"></script>
+  <script>
+   AOS.init({
+      offset:230,
+      duration:1000,
+      once:true,
+      delay:1
+    })
+   
+    $(".imgcard").mouseenter(
+      function()
+    {
+      
+      
+      $(this).hide()
+    }
+    ).mouseleave(   function()
+    {
+      
+    
+     $(this).show()
+    })
+    function addcart(st)
+  {
+    var req = new XMLHttpRequest();
+    
+    
+  
+  	url="/addcarts/"+st
+   hide=$("#hidevalue").val()
+
+  
+  req.onreadystatechange = function() {
+    if (this.readyState == 4 && this.status == 200) {
+      if(req.responseText=="true")
+      {
+         
+        window.location.href="/showproduct/"+hide;
+      }
+      else
+      {
+        window.location.href="/login"
+      }
+    }
+  };
+  req.open("GET", url, true);
+ 
+  req.send();
+
+  }
+
+
+  function removecart(st)
+  {
+    var req = new XMLHttpRequest();
+   
+    
+    hide=$("#hidevalue").val()
+  	url="/removecarts/"+st
+   
+
+  
+  req.onreadystatechange = function() {
+    if (this.readyState == 4 && this.status == 200) {
+      if(req.responseText=="true")
+      {
+          
+        window.location.href="/showproduct/"+hide;
+      }
+    }
+  };
+  req.open("GET", url, true);
+ 
+  req.send();
+
+  }
+
+  </script>
+{% endblock script %}
+  

@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <link rel="stylesheet" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.10.3/themes/smoothness/jquery-ui.min.css" />
+    </head>
+
+    <body>
+        <input id="i1" type="text">
+        <input type="text" id="myDatepicker" placeholder="Click to pick date" />
+        <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+        <script src="//ajax.googleapis.com/ajax/libs/jqueryui/1.10.3/jquery-ui.min.js"></script>
+        <script>
+            /* step 5 */
+            $( "#i1" ).autocomplete({
+                source:['vk','abd','yuvi','virat','virushka']
+            },
+            {
+                autofocus:true,
+                minLength:2
+            });
+            </script>
+       
+
+    </body>
+    
+</html>

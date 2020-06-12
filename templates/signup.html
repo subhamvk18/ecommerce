@@ -1,0 +1,244 @@
+{% extends 'base.html' %}
+
+{% block css %}
+<style>
+	input[type="submit"]
+	{
+		outline:green;
+		border: 1px solid green;
+		color: red;
+	}
+	input[type="text"],input[type="password"],input[type="email"]
+	{
+		border: none!important;
+		border-bottom: 1px solid black!important;
+		border-radius: none!important;
+		font-size:17px;
+		font-weight: bold;
+		font-family: Arial, Helvetica, sans-serif;
+	}
+	input:focus
+	{
+		outline: none!important;
+		transform: translateY(3px);
+		
+	}
+	.show1
+	{
+		float:right;
+		margin-top: -50px;
+		cursor: pointer;
+		margin-right: -20px;
+	}
+	.show2
+	{
+		float:right;
+		margin-top: -50px;
+		cursor: pointer;
+		margin-right: -20px;
+	}
+	.sign
+	{
+		background-image: url('/static/images/sign1.jpg');
+		width: 100%;
+		height:100vh;
+		background-size: 100% 100%;
+		background-repeat: no-repeat;
+		opacity: 0.8;
+		
+		background-attachment: fixed;
+	}
+	.signhead
+	{
+		font-size: 36px;
+		font-family: Arial, Helvetica, sans-serif;
+		font-weight: bold;
+	}
+</style>
+	
+{% endblock css %}
+	
+
+{% block body %}
+<div class="sign col-lg-12 col-12">
+<div class="bg-grey-lighter min-h-screen flex flex-col">
+	<div class="container max-w-sm mx-auto flex-1 flex flex-col items-center justify-center px-2">
+		<div class="px-6 py-8 rounded  text-black w-full">
+			<h1 class="signhead mb-8 mx-auto text-3xl text-center">Sign up</h1>
+			<form action="/signup" method="post">
+				{% csrf_token %}
+			<input 
+				type="text"
+				class="block border border-grey-light w-full p-3 rounded mb-4"
+				name="name"
+				placeholder="Full Name" required/>
+
+			<input 
+				type="email"
+				class="block border border-grey-light w-full p-3 rounded mb-4"
+				name="email"
+				placeholder="Email" required />
+
+				<input 
+				type="text"
+				class="block border border-grey-light w-full p-3 rounded mb-4"
+				name="username"
+				placeholder="Username" id="username" onkeyup="cuname();" onmouseout="passu()" title="Username length must be greater than 4 and contains atleast one digit and alphabate" required />	
+
+			<input 
+				type="password"
+				class="block border border-grey-light w-full p-3 rounded mb-4"
+				name="password"
+				placeholder="Password" id="password" onkeyup="cpass();"  onmouseout="passc()" title="Password length must be greater than 7 and contains atleast one digit and alphabate" required/> 
+				<i class="show1 fa fa-eye" id="show1" aria-hidden="true"></i>
+			<input 
+				type="password"
+				class="block border border-grey-light w-full p-3 rounded mb-4"
+				name="cpassword" id="cpassword"
+				placeholder="Confirm Password"  title="Same as Password" required/>
+				<i class="show2 fa fa-eye" id="show2" aria-hidden="true"></i>
+				<button class="bg-blue-500 hover:bg-outline-blue-700 text-white font-bold py-2 px-4 w-full rounded-full">
+					Create Account
+				  </button>
+		</form>
+			
+			<div class="text-center text-sm text-blue-100 mt-4">
+				By signing up, you agree to the 
+				<a class="no-underline border-b border-grey-dark text-grey-dark" href="#">
+					Terms of Service
+				</a> and 
+				<a class="no-underline border-b border-grey-dark text-grey-dark" href="#">
+					Privacy Policy
+				</a>
+			</div>
+		</div>
+
+		<div class="text-blue-100  mt-4">
+			<b>	Already have an account? 
+			<a class="no-underline border-b border-blue text-blue-900" style="font-size: 25px;color: blue!important;" href="/login">
+				Log in
+			</a>.</b>
+		
+		</div>
+	</div>
+</div>
+</div>
+{% endblock body %}
+	
+
+
+{% block script %}
+<script>
+	function passc()
+	{
+		$("#password").css("background-color","white")
+	}
+	function passu()
+	{
+		$("#username").css("background-color","white")
+	}
+function cuname()
+{
+	var req = new XMLHttpRequest();
+    uname=$("#username").val()
+  
+  	url="/check?uname="+uname;
+
+
+  
+  req.onreadystatechange = function() {
+    if (this.readyState == 4 && this.status == 200) {
+		
+     if(req.responseText=="false")
+     {
+		$("#username").css({"background-color":"red","opacity":"0.7","font-weight":"bold","font-size":"18px"})
+     }
+	 else
+	 {
+		$("#username").css({"background-color":"green","opacity":"0.8"});
+	 }
+    }
+  };
+  req.open("GET", url, true);
+ 
+  req.send();
+}
+
+
+function cpass()
+{
+	var req = new XMLHttpRequest();
+    uname=$("#password").val()
+  
+  	url="/pascheck?pass="+uname;
+
+
+  
+  req.onreadystatechange = function() {
+    if (this.readyState == 4 && this.status == 200) {
+		
+     if(req.responseText=="false")
+     {
+		$("#password").css({"background-color":"red","opacity":"0.7","font-weight":"bold","font-size":"18px"})
+     }
+	 else
+	 {
+		$("#password").css({"background-color":"green","opacity":"0.8"});
+	 }
+    }
+  };
+  req.open("GET", url, true);
+ 
+  req.send();
+}
+
+
+$(function() {  
+$("#password").tooltip()
+$("#username").tooltip()
+$("#cpassword").tooltip()
+
+})
+$("#show1").click(function(){
+	if($("#show1").hasClass("show1 fa fa-eye"))
+	{
+		$("#show1").removeClass();
+		$("#show1").addClass("show1 fa fa-eye-slash");
+		val=$("#password").val();
+		$("#password").attr("type","text");
+		$("#password").val()=val;
+
+	}
+	else
+	{
+		$("#show1").removeClass();
+		$("#show1").addClass("show1 fa fa-eye");
+		val=$("#password").val();
+		$("#password").attr("type","password");
+		$("#password").val()=val;
+	}
+})
+
+$(".show2").click(function(){
+	if($("#show2").hasClass("show1 fa fa-eye"))
+	{
+		$("#show2").removeClass();
+		$("#show2").addClass("show1 fa fa-eye-slash");
+		val=$("#cpassword").val();
+		$("#cpassword").attr("type","text");
+		$("#cpassword").val()=val;
+
+	}
+	else
+	{
+		$("#show2").removeClass();
+		$("#show2").addClass("show1 fa fa-eye");
+		val=$("#cpassword").val();
+		$("#cpassword").attr("type","password");
+		$("#cpassword").val()=val;
+	}
+})
+</script>
+	
+{% endblock script %}
+	

@@ -1,0 +1,222 @@
+{% extends 'base.html' %}
+{% load ordercustom_tags %}
+
+{% block css %}
+
+
+    
+{% endblock css %}
+
+
+{% block body %}
+
+
+<div class="site-section">
+    <div class="container">
+      
+      <div class="row mt-5">
+        <div class="col-md-6 mb-5 mb-md-0">
+          <h2 class="h3 mb-3 text-black">Shipping Details</h2>
+          <div class="p-3 p-lg-5 border">
+          <p class="text-success -mt-2">*You Can change only Email and Phone no*</p>
+            <div class="form-group row">
+              <div class="col-md-6">
+                <label for="c_fname" class="text-black">First Name</label>
+                <input type="text" class="form-control" id="c_fname" name="fname" value="{{user.first_name}}" readonly>
+              </div>
+              <div class="col-md-6">
+                <label for="c_lname" class="text-black">Last Name </label>
+                <input type="text" class="form-control" id="c_lname" name="lname" value="{{user.last_name}}" readonly>
+              </div>
+            </div>
+
+           
+
+            <div class="form-group row">
+              <div class="col-md-12">
+                <label for="c_address" class="text-black">Address </label>
+                <input type="text" class="form-control" id="c_address" name="name" value="{{rdict|findvalue:'village'}}" readonly>
+              </div>
+            </div>
+
+            <div class="form-group row">
+              <div class="col-md-12">
+                <label for="c_address" class="text-black">Address2(StreetNo/HouseNo) </label>
+                <input type="text" class="form-control" id="c_address" name="c_address" value="{{rdict|findvalue:'streetno'}}" readonly>
+              </div>
+            </div>
+
+            <div class="form-group row">
+              <div class="col-md-4">
+                <label for="c_state_country" class="text-black">City</label>
+                <input type="text" class="form-control" name="city" value="{{rdict|findvalue:'city'}}" readonly>
+              </div>
+              <div class="col-md-4">
+                <label for="c_postal_zip" class="text-black">Dist</label>
+                <input type="text" class="form-control" name="dist" value="{{rdict|findvalue:'dist'}}" readonly>
+              </div>
+              <div class="col-md-4">
+                <label for="c_postal_zip" class="text-black">State</label>
+                <input type="text" class="form-control" name="state" value="{{rdict|findvalue:'state'}}" readonly>
+              </div>
+            </div>
+
+            <div class="form-group row">
+              <div class="col-md-6">
+                <label for="c_state_country" class="text-black">Post</label>
+                <input type="text" class="form-control" name="post" value="{{rdict|findvalue:'post'}}" readonly>
+              </div>
+              <div class="col-md-6">
+                <label for="c_postal_zip" class="text-black">PinCode</label>
+                <input type="text" class="form-control"  name="pin" value="{{rdict|findvalue:'pin'}}"readonly>
+              </div>
+            </div>
+
+            <div class="form-group row mb-5">
+              <div class="col-md-6">
+                <label for="c_email_address" class="text-black">Email Address</label>
+                <input type="text" class="form-control" id="email" name="email" value="{{user.email}}" required>
+              </div>
+              <div class="col-md-6">
+                <label for="c_phone" class="text-black">Phone</label>
+                <input type="text" class="form-control" id="phone" name="phone" placeholder="Phone" maxlength="10" required>
+              </div>
+            </div>
+
+            
+            </div>
+
+
+            
+
+
+                  
+
+
+                  
+
+     </div>
+                 
+        <div class="col-md-6">
+
+          <div class="row mb-5">
+            <div class="col-md-12">
+              <h2 class="h3 mb-3 text-black">Coupon Code</h2>
+              <div class="p-3 p-lg-5 border">
+                
+                <label for="c_code" class="text-black mb-3">Enter your coupon code if you have one</label>
+                <div class="input-group w-75">
+                  <input type="text" class="form-control" id="c_code" placeholder="Coupon Code" aria-label="Coupon Code" aria-describedby="button-addon2">
+                  <div class="input-group-append">
+                    <button class="btn btn-primary btn-sm" type="button" id="button-addon2">Apply</button>
+                  </div>
+                </div>
+
+              </div>
+            </div>
+          </div>
+          
+          <div class="row mb-5">
+            <div class="col-md-12">
+              <h2 class="h3 mb-3 text-black">Your Order</h2>
+              <div class="p-3 p-lg-5 border">
+                <table class="table site-block-order-table mb-5">
+                  <thead>
+                    <tr><th>Product</th>
+                    <th>Total</th>
+                  </tr></thead>
+                  <tbody>
+                    {% for i in cart %}
+                    <tr>
+                      <td>{{i.cart.name|truncatechars:50}}.. <strong class="mx-2">x</strong> {{i.quantity}}</td>
+                      <td>{{i.cart.price|mul:i.quantity}}</td>
+                    <td><button class="btn btn-primary" onclick="remove('{{i.id}}','{{slug}}')"><i class="fa fa-trash" aria-hidden="true"></i></button></td>
+                    </tr>
+                    {% endfor %}
+                    <tr>
+                      <td class="text-black font-weight-bold"><strong>Cart Subtotal</strong></td>
+                      <td class="text-black">{{sum}}</td>
+                    </tr>
+                    <tr>
+                      <td class="text-black font-weight-bold"><strong>Order Total</strong></td>
+                      <td class="text-black font-weight-bold"><strong>{{sum}}</strong></td>
+                    </tr>
+                  </tbody>
+                </table>
+                <center><p class="text-success px-3" style="font-size:25px;font-family: Arial, Helvetica, sans-serif;">*Only COD available*</p></center>
+                
+
+                <div class="form-group">
+                  <button class="btn btn-primary btn-lg py-3 btn-block mt-2" onclick="complete('{{slug}}')">Place Order</button>
+                </div>
+
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+      <!-- </form> -->
+    </div>
+  </div>
+    
+{% endblock body %}
+    
+  
+
+
+{% block script %}
+<script>
+  function remove(cslug,oslug)
+  {
+    var req = new XMLHttpRequest();
+    
+
+  	url="/removecart?cid="+cslug+"&oslug="+oslug
+   
+  
+  req.onreadystatechange = function() {
+    if (this.readyState == 4 && this.status == 200) {
+      if(req.responseText=="true")
+      {
+          
+        window.location.href="/placeorder/"+oslug
+      }
+    }
+  };
+  req.open("GET", url, true);
+ 
+  req.send();
+
+  
+  }
+  function complete(slug)
+  {
+    email=$("#email").val()
+    phone=$("#phone").val()
+
+    var req = new XMLHttpRequest();
+    
+
+  	url="/undercomplete/"+slug+"?email="+email+"&phone="+phone
+    
+   
+  
+  req.onreadystatechange = function() {
+    if (this.readyState == 4 && this.status == 200) {
+      if(req.responseText=="true")
+      {
+          
+        window.location.href="/payment/"+slug
+      }
+    }
+  };
+  req.open("GET", url, true);
+ 
+  req.send();
+    
+  }
+</script> 
+    
+{% endblock script %}
+    

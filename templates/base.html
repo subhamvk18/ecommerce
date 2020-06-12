@@ -1,0 +1,258 @@
+<!doctype html>
+{% load static %}
+<html lang="en">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.0.0/animate.min.css"/>
+    <link rel="stylesheet" href="https://unpkg.com/aos@next/dist/aos.css" />
+    <link href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous">
+    <link rel="stylesheet" type="text/css" href="/static/css/base.css" >
+    <link href="https://unpkg.com/tailwindcss@^1.0/dist/tailwind.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="{% static "jquery-ui/jquery-ui.min.css" %}" />
+    <link rel="stylesheet" href="{% static "jquery-ui/ui-lightness/theme.css" %}" />
+
+    <style>
+      #alert 
+      {
+        opacity: 0.7!important;
+        border-radius: 100px;
+        
+
+      }
+      #alert:focus
+      {
+        outline: none;
+      }
+
+   
+        
+        .search
+        {
+          border: none;
+          padding: 2px;
+          font-size: 18px;
+        }
+
+  .icon1:hover{
+    transform: translateY(-3px);
+  }
+
+  @media (max-width:800px){
+  #search {
+    
+    outline: none;
+    width: 200px;
+   
+   }}
+
+  @media (min-width:800px){
+    #search {
+    
+    outline: none;
+    width: 500px;
+   
+   }}
+   .adrop:hover
+   {
+     background-color: turquoise;
+   }
+   navbar-toggler:focus
+   {
+     outline: none;
+   }
+ </style>
+    {% block css %}
+    
+    {% endblock css %}
+      
+    <title>Ecommerce</title>
+  </head>
+  <body>
+   {% load custom_tags %}
+    
+    <!--Start Header-->
+      
+   
+    <nav class="navbar navbar-expand-lg bg-light navbar-dark -mt-2 sticky-top" >
+      
+      <a class="navbar-brand mx-auto  -pt-5" href="#"><span class="E"><i class="fa fa-shopping-basket" aria-hidden="true" style="color:sandybrown"></i> E</span> <span class="c" style="color: black;">commerce</span> </a>
+      <button class="navbar-toggler"  style="background-color:	#0080ff!important;border: none;" type="button" id="tbtn" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon" ></span>
+      </button>
+
+    
+      <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="navbar-nav mx-auto mr-2">
+          <li class="nav-item active">
+            <a class="a1 nav-link" href="/"> <i class="fa fa-home" aria-hidden="true"></i> Home <span class="sr-only">(current)</span></a>
+          </li>
+          <li class="nav-item active">
+            <a class="a1 nav-link" href="/about"><i class="fa fa-info-circle" aria-hidden="true"></i> About</a>
+          </li>
+          
+          <li class="nav-item dropdown">
+           
+            <a class="a1 nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+              <i class="fa fa-product-hunt" aria-hidden="true"></i> Products
+            </a>
+            <div class="dropdown-menu" aria-labelledby="navbarDropdown" >
+              {% for i in cats|findcategory %}
+              <a class="adrop dropdown-item" href="/showproduct/{{i.slug}}">{{i.name}}</a>
+              
+              {% endfor %}
+              </div>
+              
+             
+          </li>
+          <li class="nav-item active" id="zind">
+           <a class="a1 nav-link" href="/contact"> <i class="fa fa-phone" aria-hidden="true"></i> Contact</a>
+          </li>
+          
+        </ul>
+        
+        <div class="div1">
+          {% if user.is_authenticated %}
+        
+         
+         
+
+          <div class="btn-group">
+            <button type="button" class="btn btn-outline-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                <i class="fa fa-user icon-2x"></i>
+            </button>
+          
+            <div class="dropdown-menu dropdown-menu-right pl-2 " style="width:25px;margin-left:20px">
+                 
+                <a  class="a2 dropdown-item" href="/account/{{user.username}}"><span style="font-size:15px">My Account</span>&nbsp;<i class="icon-dashboard icon-1x"></i> </a>
+                <a  class="a2 dropdown-item" href="/order/{{user.username}}"><span style="font-size:15px">My Order</span></a>
+
+                <a  class="a2 dropdown-item" href="/logout"><span style="font-size:15px">Logout </span> &emsp;&nbsp;<i class="fa fa-sign-out" aria-hidden="true"></i> </a>
+                
+            </div>
+          
+          </div>
+          <a class="a2 ml-3" href="/showcarts/{{user.username}}"> <button class="btn btn-outline-success"> {{user.username|findcart}}<i class="fa fa-cart-plus" aria-hidden="true"></i></button></a>
+     
+           
+       
+          {% else %}
+          <a class="a2" href="/login"><i class="fa fa-sign-in" aria-hidden="true"></i>Login</a>
+          <a class="a2" href="/signup">Signup</a>
+          {% endif %}
+        </div>
+        
+        
+         </div>
+      
+      </div>
+    </nav>
+    <nav class="navbar navbar-expand-lg mt-2"style="z-index: 1!important;">
+      <form class="nav1 form-inline mx-auto" action="/search/normal" method="POST">
+        {% csrf_token %}
+        <input class="form-control mr-sm-2" type="text" placeholder="Search" aria-label="Search" name="searchproduct" id="search">
+        <button class="btn btn-outline-success my-2 my-sm-0 ml-1" type="submit"><i class="fa fa-search" aria-hidden="true"></i></button>
+      </form>
+    </nav>
+    <!--End Header-->
+
+    {% if messages %}
+    {% for i in messages %}
+<div class="alert alert-{{i.tags}} alert-dismissible fade show" id="alert" role="alert">
+  <strong>{{i}}</strong>
+  <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+    <span aria-hidden="true">&times;</span>
+  </button>
+</div>
+    {% endfor %}
+    {% endif %}
+    {% block body %}
+      
+    {% endblock body %}
+
+    <!--Start Foorter-->
+
+    
+<footer class="text-gray-700 body-font">
+  <hr class="hr mt-3 -mb-3 " style="color: brown;">
+  <div class="container px-5 py-8 mx-auto flex items-center sm:flex-row flex-col">
+    <a class="flex title-font font-medium items-center md:justify-start justify-center text-gray-900">
+      <i class="fa fa-shopping-basket mt-3" aria-hidden="true" style="font-size:26px;color:sandybrown"></i>
+      <span class="ml-3 mt-3 text-xl">Ecommerce</span>
+    </a>
+    <p class="text-sm text-gray-500 sm:ml-4 sm:pl-4 sm:border-l-2 sm:border-gray-200 sm:py-2 sm:mt-0 mt-4">© 2020 tailblocks —
+      <a href="https://twitter.com/knyttneve" class="text-gray-600 ml-1" rel="noopener noreferrer" target="_blank">@knyttneve</a>
+    </p>
+    <span class="inline-flex sm:ml-auto sm:mt-0 mt-4 justify-center sm:justify-start">
+      <a class="icon1 text-gray-500" href="#">
+        <svg fill="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" class="w-5 h-5" viewBox="0 0 24 24">
+          <path d="M18 2h-3a5 5 0 00-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 011-1h3z"></path>
+        </svg>
+      </a>
+      <a class="icon1 ml-3 text-gray-500" href="#">
+        <svg fill="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" class="w-5 h-5" viewBox="0 0 24 24">
+          <path d="M23 3a10.9 10.9 0 01-3.14 1.53 4.48 4.48 0 00-7.86 3v1A10.66 10.66 0 013 4s-4 9 5 13a11.64 11.64 0 01-7 2c9 5 20 0 20-11.5a4.5 4.5 0 00-.08-.83A7.72 7.72 0 0023 3z"></path>
+        </svg>
+      </a>
+      <a class="icon1 ml-3 text-gray-500" href="#">
+        <svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" class="w-5 h-5" viewBox="0 0 24 24">
+          <rect width="20" height="20" x="2" y="2" rx="5" ry="5"></rect>
+          <path d="M16 11.37A4 4 0 1112.63 8 4 4 0 0116 11.37zm1.5-4.87h.01"></path>
+        </svg>
+      </a>
+      <a class="icon1 ml-3 text-gray-500" href="#">
+        <svg fill="currentColor" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="0" class="w-5 h-5" viewBox="0 0 24 24">
+          <path stroke="none" d="M16 8a6 6 0 016 6v7h-4v-7a2 2 0 00-2-2 2 2 0 00-2 2v7h-4v-7a6 6 0 016-6zM2 9h4v12H2z"></path>
+          <circle cx="4" cy="4" r="2" stroke="none"></circle>
+        </svg>
+      </a>
+    </span>
+  </div>
+</footer>
+
+    <!--End Footer-->
+      
+    <!-- Optional JavaScript -->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    
+    
+    
+    <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/waypoints/4.0.1/jquery.waypoints.min.js" integrity="sha256-jDnOKIOq2KNsQZTcBTEnsp76FnfMEttF6AV2DF2fFNE=" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Counter-Up/1.0.0/jquery.counterup.min.js" integrity="sha256-JtQPj/3xub8oapVMaIijPNoM0DHoAtgh/gwFYuN5rik=" crossorigin="anonymous"></script>
+    <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
+    <script src="https://unpkg.com/aos@next/dist/aos.js"></script>
+    <script src="{% static "jquery-ui/external/jquery/jquery.js" %}"></script>
+    <script src="{% static "jquery-ui/jquery-ui.min.js" %}"></script>
+    <script src="{% static "jquery-ui/i18n/datepicker-zh-Hans.js" %}"></script>
+   
+    <script>
+       $(function() {
+    $("#search").autocomplete({
+      source: "/searchauto",
+      select: function (event, ui) { //item selected
+        AutoCompleteSelectHandler(event, ui)
+      },
+      minLength: 2,
+    });
+  });
+
+  function AutoCompleteSelectHandler(event, ui)
+  {
+    var selectedObj = ui.item;
+  }
+    </script>
+    {% block script %}
+
+      
+    {% endblock script %}
+      
+  </body>
+
+</html>

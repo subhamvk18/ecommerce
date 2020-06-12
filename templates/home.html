@@ -1,0 +1,157 @@
+{% extends 'base.html' %}
+
+{% block css %}
+<link rel="stylesheet" href="/static/css/owl.carousel.css">
+<link rel="stylesheet" href="/static/css/owl.theme.default.css">
+<style>
+.home
+{
+    background-image: url('/static/images/back2.jpg');
+    width: 100%;
+    height:70vh;
+    background-size: 100% 100%;
+    background-repeat: no-repeat;
+    opacity: 0.8;
+    z-index: -1;
+    background-attachment: fixed;
+    /*clip-path: polygon(0% 0%,100% 0%,100% 75%,50% 100%,0% 75%);*/
+}
+
+.caption
+{
+    width: 100%;
+    max-width: 100%;
+    font-weight:0.2rem;
+    color:#990000;
+    text-transform: capitalize;
+    position: absolute;
+    z-index: 1;
+    text-align: center;
+    top: 42%;
+}
+.h1
+{
+    font-size: 40px;
+    font-weight: 0.2rem;
+    font-family: Georgia, 'Times New Roman', Times, serif;
+    word-spacing: 0.1rem;
+    letter-spacing: 0.1rem;
+
+}
+.e
+{
+    font-size: 60px!important;
+    font-weight: 0.2rem;
+    font-style: italic;
+    word-spacing: 0.1rem;
+    letter-spacing: 0.1rem;
+
+}
+#h5
+{
+    padding: 20px;
+    word-spacing: .3rem;
+}
+#btn1
+{
+    border-radius: 100px;
+    border: 1px solid white;
+    padding:14px;
+    margin-top:20px;
+    color:#4d6be2;
+    font-weight: bolder;
+    background-color: darkorange;
+}
+#btn1:hover
+{
+    
+    background-color: darkorange;
+}
+.c1:hover
+{
+    background-color: #e2edea
+}
+
+</style>   
+{% endblock css %}
+
+
+{% block body %}
+
+
+    <div class="home">
+     <div class="caption">
+        <h1 class="h1">Welcome to <span class="e" style="font-size: 50px;">E</span>Commerce</h1>
+
+        
+        <a href="#" id="btn1" class="btn btn-outline-light btn-lg" onmouseover="fun()" onmouseout="fun1()" role="button">Shop More</a>
+     </div>
+      
+    
+ 
+</div>
+<div class="container mt-5">
+    <h1 class="text-success mb-2" style="font-weight: bold;font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;font-size: 40px;text-align: center;">Products:</h1>
+    <hr>
+<div class="owl-carousel owl-theme mt-5">
+{% for j in list %}
+    {% for i in list %}
+    <div class="item mx-auto">
+        <div class="c1 card p-2 ml-5 xl:ml-5 ml-2" style="width: 18rem;">
+            <img class="card-img-top mx-auto" src="{{i.image.url}}" alt="Card image cap" style="width: 200px;height: 200px;">
+            <div class="card-body mx-auto">
+              <h5 class="card-title ml-3" style="font-weight: bold;color: #5d9c6d;font-size: 20px;font-family: Arial, Helvetica, sans-serif;">{{i.name|truncatechars:40}}</h5>
+              <p class="card-text ml-3">{{i.brand}}.</p>
+              <p class="card-text text-primary ml-3"style="font-weight:bold;font-size:25px">Rs:{{i.price}}.</p>
+              <a href="/product/{{i.slug}}" class="btn btn-outline-info mt-2 ml-3">Show Product</a>
+            </div>
+          </div>
+    </div>
+    {% endfor %}
+{% endfor %}
+</div>
+</div>
+
+
+{% endblock body %}
+
+
+{% block script %}
+<script src="/static/js/owl.carousel.js"></script>
+<script src="/static/js/owl.carousel.min.js"></script>
+<script>
+$(".h1").addClass('animate__animated animate__fadeInDownBig animate__delay-0s');
+$("#btn1").addClass('animate__animated animate__fadeInRightBig animate__delay-1s');
+
+function fun()
+        {
+
+          $( "#btn1" ).removeClass( "animate__animated animate__fadeInRightBig animate__delay-1s" )
+          $("#btn1").addClass('animate__animated animate__bounceIn');
+          
+         
+        }
+        
+
+        $('.owl-carousel').owlCarousel({
+    loop:true,
+    margin:10,
+    nav:true,
+    responsive:{
+        0:{
+            items:1
+        },
+        600:{
+            items:3
+        },
+        1000:{
+            items:3
+        }
+    }
+})
+                
+</script>
+  
+{% endblock script %}
+  
+        

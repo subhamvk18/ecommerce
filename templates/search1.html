@@ -1,0 +1,129 @@
+{% extends 'base.html' %}
+
+{% block css %}
+<style>
+  .drop
+  {
+    color:brown
+  }
+  #sortby
+  {
+    background-color:#c0d5fb;
+    color:black;
+
+    
+  }
+  .opt
+  {
+    background-color: transparent!important;
+  }
+  #sortby:focus
+  {
+    outline: none;
+  }
+
+  .dropbtn:hover
+  {
+    transform: translateY(3px);
+  }
+</style>
+    
+{% endblock css %}
+    
+
+
+{% block body %}
+
+
+
+<div class="btn-group mr-5 mt-2" style="float:right;margin-right:100px;">
+  <button type="button" class="dropbtn btn btn-outline-secondary  dropdown-toggle" id="dropdownMenuReference" data-toggle="dropdown">Reference</button>
+  <div class="di dropdown-menu" aria-labelledby="dropdownMenuReference" style="margin-right:30px">
+    <a class="di dropdown-item" href="#" id="Relevance" onclick="func('relevance');">Relevance</a>
+    <a class="di dropdown-item" href="#" id="name"onclick="func('name');">Name, A to Z</a>
+    <a class="di dropdown-item" href="#" id="-name" onclick="func('-name');">Name, Z to A</a>
+    <div class="dropdown-divider"></div>
+    <a class="di dropdown-item" href="#" id="price" onclick="func('price');">Price, low to high</a>
+    <a class="di dropdown-item" href="#"id="-price" onclick="func('-price');">Price, high to low</a>
+  </div>
+</div>
+</div>
+</div>
+</div>  
+
+<section class="text-gray-700 body-font">
+    <div class="container px-5 py-24 mx-auto">
+      <div class="flex flex-wrap -m-4">
+               
+               {% for i in item %}
+                
+               
+                    <div class="lg:w-1/3 md:w-1/2 p-4 w-full " data-aos="fade-up" data-aos-duration="1000">
+                      <a class="block relative h-48 rounded overflow-hidden">
+                        <img alt="ecommerce" class="object-cover object-center w-full h-full block" src="{{i.image.url}}">
+                      </a>
+                      <div class="mt-4">
+                        <h3 class="text-gray-500 text-xs tracking-widest title-font mb-1">{{i.category}}</h3>
+                        <h2 class="text-gray-900 title-font text-lg font-medium">{{i.name|truncatechars:50}} of {{i.brand}}</h2>
+                        <p class="mt-1">Rs:{{i.price}}</p>
+                        <a href="/product/{{i.slug}}"><button class="btn btn-sm btn-info mt-2 p-2">Details</button></a>
+                      </div>
+                    </div>
+              
+                   
+              
+                 {% endfor %}   
+
+        </div>
+    </div>
+</section>
+
+<div class="row mx-auto mb-4">
+    <nav aria-label="Page navigation example" class="mx-auto">
+      <ul class="pagination">
+          {% if item.has_previous %}
+        <li class="page-item">
+          <a  href="?page={{item.previous_page_number}}" style="text-decoration: none;">
+            <button class="btn btn-outline-primary">Previous Page</button>
+          </a>
+        </li>
+          {% endif %}
+        <li class="page-item"><a href="?page={{item.number}}" style="text-decoration: none;"><button class="ml-4 btn btn-outline-primary">{{item.number}}
+
+        </button></a></li>
+        {% if item.has_next %}
+        <li class="page-item">
+          <a href="?page={{item.next_page_number}}" style="text-decoration: none;">
+            <button class="ml-4 btn btn-outline-primary">Next Page</button>
+          </a>
+        </li>
+          
+    
+    
+            
+            {% endif %}
+      </ul>
+    </nav>
+  </div>
+{% endblock body %}
+    
+
+
+{% block script %}
+<script>
+AOS.init({
+    offset:230,
+    duration:1000,
+    once:true,
+    delay:1
+  })
+function func(st)
+{
+  
+  window.location.href="/search/"+st;
+}
+  
+</script>
+    
+{% endblock script %}
+    

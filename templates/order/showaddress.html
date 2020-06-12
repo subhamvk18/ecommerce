@@ -1,0 +1,248 @@
+{% extends 'base.html' %}
+
+
+{% block css %}
+<style>
+  @media (min-width: 1000px) {
+    .adda
+    {
+      margin-top:-60px;
+    }
+    
+  }
+  .adda:hover
+  {
+    transform: translateY(-3px);
+  }
+  @media (max-width: 700px) {
+    .adda
+    {
+      margin-top:20px;
+    }
+    .hadd
+    {
+      margin-top: -20px;;
+    }
+    
+  }
+</style>
+    
+{% endblock css %}
+    
+
+{% block body %}
+
+
+
+<section class="text-gray-700 body-font">
+  <div class="container px-5 py-24 mx-auto">
+    <div class="text-center mb-20">
+      <h1 class="hadd sm:text-3xl text-2xl font-medium title-font text-red-900 mb-4">Select One Delivary Address</h1>
+      <button class="adda btn btn-outline-danger" data-toggle="modal" data-target="#exampleModal" style="float:right">Add Address  <i class="fa fa-plus" aria-hidden="true"></i></button>
+      
+      <div class="flex mt-6 justify-center">
+        <div class="w-16 h-1 rounded-full bg-indigo-500 inline-flex"></div>
+      </div>
+    </div>
+    <div class="flex flex-wrap sm:-m-4 -mx-4 -mb-10 -mt-4">
+
+    {% for i in list %}  
+      <div class="addressback p-2 md:w-1/4 md:mb-0 mb-6 flex flex-col text-center items-center mt-1 mx-2" style="border: 1px solid black;" id="div{{i.slug}}">
+        
+        
+        <div class="flex-grow">
+          <a href="/order/deltaddress/{{i.slug}}" title="Delete the Address" class="deltbtn -mt-2" style="text-decoration: none;float: right;color:indigo;font-size: 25px;">
+            <i class="fa fa-trash" aria-hidden="true"></i></a>
+          <h2 class="text-gray-900 text-lg title-font font-medium mb-3">Address {{i.no}}</h2>
+          
+          
+          <p class="leading-relaxed text-base">{{i.name}},{{i.city}}</p>
+          <p class="leading-relaxed text-base">Street={{i.street}},&emsp;HouseNo={{i.houseno}}</p>
+          <p class="leading-relaxed text-base">{{i.post}},{{i.pin}}</p>
+          <p class="leading-relaxed text-base">{{i.dist}},({{i.state}})</p>
+          <button class="flex mx-auto mt-3 text-white bg-indigo-500 border-0 py-2 px-3 focus:outline-none hover:bg-indigo-600 rounded text-lg" style="float:left" onclick="modaddress('{{i.slug}}')">Modify</button>&emsp;&emsp;
+          <button class="flex mx-auto mt-3 text-white bg-indigo-500 border-0 py-2 px-3 focus:outline-none hover:bg-indigo-600 rounded text-lg ml-2" style="float:right" onclick="addaddress('{{i.slug}}','{{orderslug}}')">Select</button>
+          
+        </div>
+      </div>
+      <div id="{{i.slug}}" class="formdiv" style="display: none;">
+       
+        <form action="/updateaddress/{{i.slug}}" method="POST">
+          {% csrf_token %}
+          <div class="form-row">
+            <div class="form-group col-md-6">
+              <label for="inputEmail4">Village Name</label>
+              <input type="text" class="form-control" id="inputEmail4" name="address" value="{{i.name}}">
+            </div>
+            <div class="form-group col-md-6">
+              <label for="inputPassword4">City</label>
+              <input type="text" class="form-control" id="inputPassword4" name="city" value="{{i.city}}">
+            </div>
+          </div>
+          <div class="row">
+          <div class="form-group col-md-4">
+            <label for="inputAddress">Street</label>
+            <input type="text" class="form-control"  name="street" value="{{i.street}}">
+          </div>
+          <div class="form-group col-md-4">
+            <label for="inputAddress">Houseno</label>
+            <input type="text" class="form-control"   name="houseno" value="{{i.houseno}}">
+          </div>
+          <div class="form-group col-md-4">
+            <label for="inputAddress2">Dist</label>
+            <input type="text" class="form-control" name="dist" value={{i.dist}}>
+          </div>
+        </div>
+          <div class="form-row">
+            <div class="form-group col-md-6">
+              <label for="inputCity">Post</label>
+              <input type="text" class="form-control" name="post" value="{{i.post}}">
+            </div>
+            <div class="form-group col-md-4">
+              <label for="inputState">State</label>
+              <input type="text" class="form-control"  name="state" value="{{i.state}}">
+            </div>
+            <div class="form-group col-md-2">
+              <label for="inputZip">Pin</label>
+              <input type="text" class="form-control" name="pin"  value={{i.pin}}>
+            </div>
+          </div>
+         
+      <button type="submit" class="btn btn-primary btn-block" onclick="save('{{i.slug}}')">Save</button>
+        </form>
+
+      </div>
+     {% endfor %} 
+      </div>
+      
+  <a href="/placeorder/{{orderslug}}" style="text-decoration: none;color: transparent;" ><button class="flex mx-auto mt-16 text-white bg-green-600 border-0 py-2 px-8 focus:outline-none hover:bg-blue-500 rounded text-lg">Proceed</button></a> 
+  </div>
+  </section>
+
+<!--Modal-->
+
+<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title text-success text-center" id="exampleModalLabel">Add New Address</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        
+
+
+        <form action="/addingadd" method="POST">
+          {% csrf_token %}
+          <div class="form-row">
+            <div class="form-group col-md-6">
+              <label for="inputEmail4">Village Name</label> <span class="text-danger">*</span>
+              <input type="text" class="form-control"  name="naddress" required>
+            </div>
+            <div class="form-group col-md-6">
+              <label for="inputPassword4">City</label> <span class="text-danger">*</span>
+              <input type="text" class="form-control" name="ncity" required>
+            </div>
+          </div>
+          <div class="row">
+          <div class="form-group col-md-4">
+            <label for="inputAddress">Street</label>
+            <input type="text" class="form-control" name="nstreet" >
+          </div>
+          <div class="form-group col-md-4">
+            <label for="inputAddress">Houseno</label>
+            <input type="text" class="form-control"   name="nhouseno">
+          </div>
+          <div class="form-group col-md-4">
+            <label for="inputAddress2">Dist</label> <span class="text-danger">*</span>
+            <input type="text" class="form-control"  name="ndist" required>
+          </div>
+        </div>
+          <div class="form-row">
+            <div class="form-group col-md-4">
+              <label for="inputCity">Post</label> <span class="text-danger">*</span>
+              <input type="text" class="form-control" name="npost" required>
+            </div>
+            <div class="form-group col-md-4">
+              <label for="inputState">State</label> <span class="text-danger">*</span>
+              <input type="text" class="form-control"  name="nstate" required>
+            </div>
+            <div class="form-group col-md-4">
+              <label for="inputZip">Pin <span class="text-danger">*</span></label>
+              <input type="text" class="form-control" name="npin"  required>
+            </div>
+          </div>
+         
+      <button type="submit" class="btn btn-primary btn-block">Save</button>
+        </form>
+
+
+
+      </div>
+      
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+{% endblock body %}
+    
+
+
+{% block script %}
+<script>
+ 
+  function addaddress(slug,orderslug)
+  {
+    st="#div"+slug
+    $(".addressback").css("background-color","white")
+    $(st).css("background-color","#b19cc9")
+    var req = new XMLHttpRequest();
+    
+    
+     
+  	url="/placeaddress?addressslug="+slug+"&orderslug="+orderslug
+    
+   
+
+  
+  req.onreadystatechange = function() {
+    if (this.readyState == 4 && this.status == 200) {
+      if(req.responseText=="true")
+      {
+          
+       
+      }
+    }
+  };
+  req.open("GET", url, true);
+ 
+  req.send();
+  }
+  $(".formdiv").hide()
+  function modaddress(slug)
+  {
+    
+    st='#'+slug
+    $(st).dialog({
+      width:1000,
+      modal:true
+    })
+  }
+  $("#deltbtn").tooltip()
+  function save(slug)
+  {
+     
+  }
+
+</script>
+    
+{% endblock script %}
+    
+  

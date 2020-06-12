@@ -1,0 +1,46 @@
+{% extends 'base.html' %}
+
+
+{% block css %}
+<style>
+    @media(min-width: 900px)
+    {
+        .divthank
+        {
+            margin-top: 100px;
+            
+        }
+        
+    }
+</style>
+    
+{% endblock css %}
+    
+
+
+
+{% block body %}
+
+<div class="site-section">
+    <div class="container">
+      <div class="row">
+        <div class="divthank col-md-12 text-center">
+          <span class="text-success" style="font-size:150px"><i class="fa fa-check-circle" aria-hidden="true"></i></span>
+          <h2 class="display-3 text-black">Thank you!</h2>
+          <p class="lead mb-5">You order was successfuly completed.</p>
+          <p><a href="/order/{{user.username}}" class="btn btn-sm btn-primary">Back to Your Order</a></p>
+        </div>
+      </div>
+    </div>
+  </div>
+    
+{% endblock body %}
+    
+
+
+
+
+{% block script %}
+    
+{% endblock script %}
+    
