@@ -50,9 +50,16 @@
                 <tr>
                     <td class="text-success" style="font-weight: bold; font-size: 20px;">Total Price:</td>
                     <td></td>
-                    <td class="text-info" style="font-weight: bold;font-size: 20px;">{{order.cost}}</td>
+                    <td class="text-info" style="font-weight: bold;font-size: 20px;">{{order.cost}}
+                   
+                    </td>
                 </tr>
                 <tr>
+                    {% if save > 0 %}
+                    <td></td>
+                    <td class="text-success" style="font-weight: bold;font-size: 15px;">* Save</td>
+                    <td class="text-success -pl-5" style="font-weight: bold;font-size: 15px;">{{save}}Rs *</td>
+                    {% endif %}
 
                 </tr>
                 </tbody>

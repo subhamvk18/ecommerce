@@ -1,6 +1,6 @@
 {% extends 'base.html' %}
 {% load custom_tags %}
-
+{% load humanize %}
 {% block css %}
     
 {% endblock css %}
@@ -55,15 +55,81 @@
         </a>
       </div>
       
-     
+    
     </div>
     
   </div>
 </section>
 
+<!--Comments field-->
 
-    
-{% endblock body %}
+
+<div class="div1 ml-auto mr-5 mt-3">
+  <button class="plusbtn btn btn-outline-info" data-toggle="modal" data-target="#exampleModalCenter">Add Reveiew <i class="fa fa-plus" aria-hidden="true"></i></button>
+</div><br><br>
+
+
+
+
+<!-- Modal -->
+<div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title text-info" id="exampleModalLongTitle">Add Reveiew</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form  action="/addcmt/{{item.slug}}" method="POST">
+          {% csrf_token %}
+          <div class="form-group mx-auto">
+          <input class="form-control" type="text" placeholder="Add Review.." name="cmt">
+        </div>
+        <div class="col-lg-2 ml-auto">
+          <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Post</button>
+        </div>
+      
+          </form>
+      </div>
+      
+    </div>
+  </div>
+</div>
+
+
+<!--Show Comment-->
+
+
+
+<div class="container mt-5">
+  <hr>
+  <h1 class="text-success mt-2" style="text-align: center;font-size:30px">Reviews:</h1>
+{% for i in cmt %}
+{% if i.parent is None %}
+
+
+        <div class="my-4">
+    <span style="font-size:25px;color:#d02f3a;padding-top:20px">  <i class="fa fa-comment"></i></span>
+                    <span style="font-size:16px">  <strong>{{i.user.username}} </strong> </span><span class="badge badge-pill badge-info">{{ i.ctime|naturaltime }}
+
+                    </span>
+      
+                                <h5 style="font-family:ARVO;font-size:17px;padding-top:7px;padding-left:20px">{{i.comments}}</h5>
+            {% if user.username == i.user.username %}
+            <a href="/deltcmt/{{i.slug}}" data-toggle="tooltip" title="Delete Post">
+             <span style="font-size: 16px; color:#e3291c;float:right;">
+            <button class="btn btn-danger"><i class="fa fa-trash"></i> </button></span></a>
+                {% endif %}
+ 
+
+</div>
+
+    {% endif %}
+   {% endfor %}
+  </div> 
+{% endblock body %} 
     
 
 

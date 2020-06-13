@@ -8,6 +8,7 @@ from django.utils.timezone import now
 
 # Create your models here.
 from ecommerce.utils import unique_slug_generator
+#from order.models import Order
 
 
 class Contact(models.Model):
@@ -53,5 +54,35 @@ class Carts(models.Model):
     quantity=models.IntegerField(default=0)
 
 
+class Comment(models.Model):
+    comments=models.TextField()
+    user=models.ForeignKey(User,on_delete=models.CASCADE)
+    item=models.ForeignKey(Items,on_delete=models.CASCADE)
+    parent=models.ForeignKey('self',on_delete=models.CASCADE,null=True)
+    ctime=models.DateTimeField(default=now)
+    slug=models.SlugField(max_length=100,null=True,blank=True)
+
+    def __str__(self):
+        return "comment of "+self.user.username
+
+
+class Cupon(models.Model):
+    name=models.CharField(max_length=100)
+    user=models.ManyToManyField(User)
+    pricededuction=models.IntegerField(default=0)
+
+    slug=models.SlugField(max_length=100,null=True,blank=True)
+    expirydate=models.DateTimeField()
+    quantity=models.IntegerField(default=0)
+
+class Usecupon(models.Model):
+    user=models.ForeignKey(User,on_delete=models.CASCADE)
+    cupon=models.ForeignKey(Cupon,on_delete=models.CASCADE)
+    quantity=models.IntegerField(default=0)
+
+
+
 pre_save.connect(pre_save_receiver, sender=Items)
 pre_save.connect(pre_save_receiver, sender=Category)
+pre_save.connect(pre_save_receiver, sender=Comment)
+pre_save.connect(pre_save_receiver, sender=Cupon)

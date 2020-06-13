@@ -66,10 +66,11 @@ def checkcart(value,slug):
 
     return n
 @register.filter(name='totalprice')
-def totalprice(value):
-    cart=Carts.objects.filter(cart=value)
+def totalprice(value,user):
+    cart=Carts.objects.filter(cart=value,user=user)
     c=cart[0]
-    n=len(cart)*c.cart.price
+
+    n=(c.quantity)*c.cart.price
     return n
 
 @register.filter(name="tp")
@@ -88,6 +89,6 @@ def tp(value):
 
 @register.filter(name="order")
 def tp(value):
-    order = Order.objects.filter(user=value)
+    order = Order.objects.filter(user=value,iscomplete=True)
     n = len(order)
     return n

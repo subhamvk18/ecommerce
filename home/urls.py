@@ -12,7 +12,7 @@ urlpatterns=[
     path('check',views.check,name='check'),
     path('pascheck',views.pascheck,name='pascheck'),
     path('showproduct/<str:slug>',views.product,name='product'),#show product categorywise
-    path('product/<str:slug>',views.showproduct,name='showproduct'),#show singlw product
+    path('product/<str:slug>',views.showproduct,name='showproduct'),#show single product
     path('addcarts/<str:slug>',views.addcarts,name='addcarts'),
      path('removecarts/<str:slug>',views.removecarts,name='removecarts'),
     path('showcarts/<str:slug>',views.showcarts,name='showcarts'),
@@ -40,6 +40,10 @@ urlpatterns=[
 
     path('deltaddress/<str:slug>', views.deltaddress, name='deltaddress'),
     path('changeuser/<str:slug>', views.changeuser, name='changeuser'),
+    path('addcmt/<str:slug>', views.addcmt, name='addcmt'),
+    path('deltcmt/<str:slug>', views.deltcmt, name='deltcmt'),
+    path('editcmt/<str:slug>', views.editcmt, name='editcmt'),
+    path('applycupon/<str:slug>', views.applycupon, name='applycupon'),#apply cupon
 
 
 

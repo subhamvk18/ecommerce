@@ -106,9 +106,9 @@
                 
                 <label for="c_code" class="text-black mb-3">Enter your coupon code if you have one</label>
                 <div class="input-group w-75">
-                  <input type="text" class="form-control" id="c_code" placeholder="Coupon Code" aria-label="Coupon Code" aria-describedby="button-addon2">
+                  <input type="text" class="form-control" id="ccode" placeholder="Coupon Code" aria-label="Coupon Code" aria-describedby="button-addon2">
                   <div class="input-group-append">
-                    <button class="btn btn-primary btn-sm" type="button" id="button-addon2">Apply</button>
+                    <button class="btn btn-primary btn-sm ml-2" type="button" id="button-addon2" onclick="applycupon('{{slug}}')">Apply</button>
                   </div>
                 </div>
 
@@ -141,6 +141,12 @@
                       <td class="text-black font-weight-bold"><strong>Order Total</strong></td>
                       <td class="text-black font-weight-bold"><strong>{{sum}}</strong></td>
                     </tr>
+                    {% if asum > 0 %}
+                    <tr>
+                      <td class="text-green-500 font-weight-bold">* Discount is applied *</td>
+                      <td class="text-black font-weight-bold"><strong>{{asum}}</strong></td>
+                    </tr>
+                    {% endif %}
                   </tbody>
                 </table>
                 <center><p class="text-success px-3" style="font-size:25px;font-family: Arial, Helvetica, sans-serif;">*Only COD available*</p></center>
@@ -215,6 +221,33 @@
  
   req.send();
     
+  }
+
+
+  function applycupon(slug)
+  {
+    value=$("#ccode").val()
+   
+
+    var req = new XMLHttpRequest();
+    
+
+  	url="/applycupon/"+slug+"?value="+value
+    
+   
+  
+  req.onreadystatechange = function() {
+    if (this.readyState == 4 && this.status == 200) {
+      if(req.responseText=="true" ||req.responseText=="false")
+      {
+          
+        window.location.href="/placeorder/"+slug
+      }
+    }
+  };
+  req.open("GET", url, true);
+ 
+  req.send();
   }
 </script> 
     

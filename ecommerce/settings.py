@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'home.apps.HomeConfig'
     ,'django_static_jquery_ui',
     'order.apps.OrderConfig',
+    'django.contrib.humanize'
 ]
 
 MIDDLEWARE = [

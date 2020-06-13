@@ -1,3 +1,4 @@
+import datetime
 import re
 import string
 
@@ -13,17 +14,20 @@ from django.template.context_processors import request
 # Create your views here.
 from django.template.loader import render_to_string
 from django.utils.html import strip_tags
+from django.utils.timezone import now
 from django.views.decorators.csrf import csrf_exempt
 import json
 
 from ecommerce import settings
-from home.models import Carts, Category, Contact, Items
+from home.models import Carts, Category, Contact, Items, Comment, Cupon, Usecupon
 from order.models import Address, Order
 
 def home(request):
    
     list=Items.objects.filter()[0:3]
-    con={'list':list}
+
+    c=Category.objects.filter().first()
+    con = {'list': list,'c':c}
     return render(request,'home.html',con)
 
 
@@ -184,7 +188,9 @@ def product(request,slug):   #show product categorywise
 def showproduct(request,slug): #show a single product
 
     li=Items.objects.get(slug=slug)
-    con={'item':li}
+
+    cmt=Comment.objects.filter(item=li).order_by('-id')
+    con = {'item': li,'cmt':cmt}
     return render(request,'showproduct.html',con)
 
 
@@ -351,6 +357,8 @@ def ordercart(request,slug):
 
 def order(request,slug):
   order=Order.objects.filter(user=request.user,iscomplete=True).order_by('-id')
+  if len(order)==0:
+      messages.info(request,"You  not give any order yet")
 
   paginator = Paginator(order, 4)
   page = request.GET.get('page')
@@ -406,7 +414,12 @@ def placeaddress(request):
 
 def showorder(request,slug):
     order=Order.objects.get(slug=slug)
-    return  render(request,'showorder.html',{'order':order})
+    sum=0
+    for i in order.cart.all():
+        sum=sum+(i.quantity)*(i.cart.price)
+
+    save=sum-order.cost
+    return  render(request,'showorder.html',{'order':order,'save':save})
 
 
 def cancelorder(request,slug):
@@ -478,7 +491,8 @@ def placeorder(request, slug):
         sum = 0
         for i in list:
             sum = sum + (i.quantity) * i.cart.price
-        con = {'rdict': rdict, 'user': user, 'cart': list, 'sum': sum, 'slug': slug}
+        asum=sum-order.cost
+        con = {'rdict': rdict, 'user': user, 'cart': list, 'sum': order.cost, 'slug': slug,'asum':asum}
 
         return render(request, 'order/placeorder.html', con)
 
@@ -543,36 +557,6 @@ def undercomplete(request, slug):
     return HttpResponse("true")
 
 
-def payment(request, slug):#last step
-    order = Order.objects.get(slug=slug)
-    if order.cost==0:
-        order.delete()
-        messages.error(request,"You have not select any item,Order is automatically cancel")
-        return redirect(f"/showcarts/{request.user}")
-    order.status = 'complete'
-    order.iscomplete = True
-    cart = order.cart.all()
-    for i in cart:
-        i.cart.quantity = i.cart.quantity - i.quantity
-        i.cart.save()
-    order.save()
-    name=order.user.username
-    try:
-        text = render_to_string('completemail.html', {'val': name})
-        hc = strip_tags(text)
-        mail = EmailMultiAlternatives('Completion of Order',
-                                      '',
-                                      settings.EMAIL_HOST_USER,
-                                      [order.email],
-                                      reply_to=[order.email])
-        mail.attach_alternative(hc, 'text/html')
-
-        mail.send()
-    except Exception as e:
-        messages.error(request, "Please Enter a valid mail")
-        return redirect("/")
-    con = {'slug': slug}
-    return render(request, 'order/completeorder.html', con)
 
 
 def deltaddress(request, slug):
@@ -615,3 +599,130 @@ def changeuser(request,slug): #change userdetails
 
 
 
+##comments filed
+
+def addcmt(request,slug):
+    cmt=request.POST.get('cmt')
+    item=Items.objects.get(slug=slug)
+    com=Comment(user=request.user,item=item,comments=cmt,parent=None)
+    com.save()
+    messages.success(request,"Review Submitted succesfully")
+    return redirect(request.META['HTTP_REFERER'])
+
+
+
+def deltcmt(request,slug):
+    cmt=Comment.objects.get(slug=slug)
+    cmt.delete()
+    messages.success(request,"You Reveiw is deleted now")
+    return redirect(request.META['HTTP_REFERER'])
+
+
+def editcmt(request,slug):
+    cmt = Comment.objects.get(slug=slug)
+    newcmt=request.POST.get('cmt')
+    cmt.comments=newcmt
+    cmt.save()
+    return redirect(request.META['HTTP_REFERER'])
+
+
+
+#cupon
+
+def applycupon(request,slug):
+    value=request.GET.get("value"," ")
+    order=Order.objects.get(slug=slug)
+    cost=order.cost
+
+
+    cupon=Cupon.objects.filter(name__exact = value)
+
+    if len(cupon)>0:
+        cuponuser = Cupon.objects.get(name__exact=value)
+        flag = False
+        tflag=False
+        expirydate=cuponuser.expirydate.date()
+        today=now().date()
+        if expirydate<today:
+            messages.error(request,'Offer is expiry')
+            return HttpResponse("false")
+
+        li = cuponuser.user.all()
+        for i in li:
+            if i==request.user:
+
+                flag=True
+                break
+
+        if flag==True:
+            if checkav(request.user,cuponuser)==1:
+                cost=cost-(cost*(cuponuser.pricededuction/100))
+            else:
+                messages.error(request,"You uses this offer most of times")
+                return HttpResponse("false")
+
+
+            usecupon = Usecupon.objects.get(cupon=cuponuser, user=request.user)
+            usecupon.quantity=usecupon.quantity+1
+            usecupon.save()
+            order.cost=cost
+
+
+            order.save()
+            messages.success(request,'cupon is applied successfully')
+            return HttpResponse("true")
+        else:
+            messages.error(request,'You are not available for this offer')
+            return HttpResponse("false")
+
+    else:
+        messages.error(request,"No cupon is found")
+        return HttpResponse("false")
+
+
+
+def checkav(value,use):
+    cupon=Usecupon.objects.filter(cupon=use,user=value)
+
+    if len(cupon)>0:
+        cupon = Usecupon.objects.get(cupon=use, user=value)
+        if use.quantity<=cupon.quantity:
+            return 0
+        else:
+            return 1
+    else:
+        cupon=Usecupon(cupon=use,user=value)
+        cupon.save()
+        return 1
+
+
+def payment(request, slug):#last step
+    order = Order.objects.get(slug=slug)
+    if order.cost==0:
+        order.delete()
+        messages.error(request,"You have not select any item,Order is automatically cancel")
+        return redirect(f"/showcarts/{request.user}")
+    order.status = 'complete'
+    order.iscomplete = True
+    cart = order.cart.all()
+    for i in cart:
+        i.cart.quantity = i.cart.quantity - i.quantity
+        i.cart.save()
+    order.save()
+    name=order.user.username
+    try:
+        text = render_to_string('completemail.html', {'val': name})
+        hc = strip_tags(text)
+        mail = EmailMultiAlternatives('Completion of Order',
+                                      '',
+                                      settings.EMAIL_HOST_USER,
+                                      [order.email],
+                                      reply_to=[order.email])
+        mail.attach_alternative(hc, 'text/html')
+
+        mail.send()
+    except Exception as e:
+        messages.error(request, "Please Enter a valid mail")
+        return redirect("/")
+    con = {'slug': slug}
+    return render(request, 'order/completeorder.html', con)
